@@ -57,7 +57,7 @@ restart_gateway() {
 
 preflight() {
   say "Hermes"
-  "$HERMES" --version | head -1
+  local v; v=$("$HERMES" --version 2>/dev/null); echo "${v%%$'\n'*}"
   say "Sidecar binary (built from this fork)"
   [ -x "$BIN_SRC" ] || die "missing $BIN_SRC; run: (cd sidecar && cargo build --release --locked)"
   shasum -a 256 "$BIN_SRC"
