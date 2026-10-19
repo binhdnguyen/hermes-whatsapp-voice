@@ -471,13 +471,11 @@ impl Bridge {
             personality as you present yourself, how the owner likes to be spoken to (including \
             language), and the few facts about the owner and their current priorities it should know. \
             Write it as instructions to that voice (\"You are ...\").";
+        // A fresh session per briefing: reusing one id made Hermes resend every earlier briefing,
+        // so the session (and its cost) grew with each refresh.
+        let session = format!("whatsapp-voice-briefing-{}", now());
         match h
-            .run(
-                prompt,
-                "Reply in plain text only.",
-                "whatsapp-voice-briefing",
-                HERMES_TIMEOUT,
-            )
+            .run(prompt, "Reply in plain text only.", &session, HERMES_TIMEOUT)
             .await
         {
             Ok(text) if !text.trim().is_empty() => {
